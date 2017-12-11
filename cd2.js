@@ -14,8 +14,8 @@ var path = require('path'),
 'use strict'
 const status = require('http-status')
 
-var key = fs.readFileSync('/Users/GermanMtz/dblitz/germanlocalhost.key');
-var cert = fs.readFileSync( '/Users/GermanMtz/dblitz/germanlocalhost.crt' );
+var key = fs.readFileSync('/root/digitalocean.key');
+var cert = fs.readFileSync( '/root/digitalocean.crt');
 
 var options = {
   key: key,
