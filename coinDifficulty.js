@@ -26,28 +26,25 @@ app.use(express.static(__dirname + '/public'));
 app.use(session({ secret: 'conduit', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false  }));
 
 app.get("/coindifficulty", function (req, res) {
-      	(async () => {
-		try {
-			const response = await got('https://www.coinwarz.com/v1/api/profitability/?apikey=585c543b04da4ac984e0b466c52626e4&algo=all');
-			console.log(response.body);
-			res.send(response.body)
-			//=> '<!doctype html> ...'
-		} catch (error) {
-			console.log(error.response.body);
-			//=> 'Internal server error ...'
-		}
-	})();
-            // repo.getWeatherJSON();
 
-            // repo.getWeatherJSON(function (responseData) {
-            //     // res.headers = {Connection: 'close'};
-            //     // console.log(responseData);
-            //     res.send(responseData);
+		var theUrl = 'https://www.coinwarz.com/v1/api/profitability/?apikey=585c543b04da4ac984e0b466c52626e4&algo=all'
+		request(theUrl, function (error, response, body) {
+  		
+  				console.log('body:', body); 
+  				res.send(body)
+		});
+ //      	(async () => {
+	// 	try {
+	// 		const response = await got('https://www.coinwarz.com/v1/api/profitability/?apikey=585c543b04da4ac984e0b466c52626e4&algo=all');
+	// 		console.log(response.body);
+	// 		res.send(response.body)
+	// 		//=> '<!doctype html> ...'
+	// 	} catch (error) {
+	// 		console.log(error.response.body);
+	// 		//=> 'Internal server error ...'
+	// 	}
+	// })();
 
-            // });
-
-
-            // res.send("hello World");
       });
 
 
@@ -57,3 +54,5 @@ app.get("/coindifficulty", function (req, res) {
 var server = app.listen( process.env.PORT || 3000, function(){
   console.log('Listening on port ' + server.address().port);
 });
+
+//'https://www.coinwarz.com/v1/api/profitability/?apikey=585c543b04da4ac984e0b466c52626e4&algo=all'
