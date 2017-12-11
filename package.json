@@ -6,6 +6,7 @@
         "template",
         "benchmark"
     ],
+    
     "author": "Devin Blitzer<devblitzer@gmail.com>",
     "dependencies": {
         "Templ8": "0.2.1",
