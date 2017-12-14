@@ -6,7 +6,11 @@
         "template",
         "benchmark"
     ],
-    
+    "scripts": {
+        "start": "node coinDifficulty.js",
+        "prepublish": "npm prune",
+        "test": "make lint && make test"
+    },
     "author": "Devin Blitzer<devblitzer@gmail.com>",
     "dependencies": {
         "Templ8": "0.2.1",
@@ -46,9 +50,5 @@
     "main": "index",
     "engines": {
         "node": ">= 0.4.1"
-    },
-    "scripts": {
-        "prepublish": "npm prune",
-        "test": "make lint && make test"
     }
 }
