@@ -11,6 +11,10 @@
         "prepublish": "npm prune",
         "test": "make lint && make test"
     },
+    "repository": {
+    "type": "git",
+    "url": "https://github.com/dblitz/CryptoData"
+    },
     "author": "Devin Blitzer<devblitzer@gmail.com>",
     "dependencies": {
         "Templ8": "0.2.1",
@@ -47,8 +51,8 @@
         "vision": "^4.1.1",
         "whiskers": "0.1.0"
     },
-    "main": "index",
+    "main": "coinDifficulty.js",
     "engines": {
-        "node": ">= 0.4.1"
+            "node": "8.9.1"
     }
 }
