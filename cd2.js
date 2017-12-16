@@ -104,45 +104,51 @@ app.post("/profitcalculator", function (req, res) {
 
 });
 
-function profitCalculator(coinName, currencyPrice, howManyMiners) {
+function profitCalculator(coinName, coinPrice, howManyMiners) {
 
   var theUrl = 'https://www.coinwarz.com/v1/api/profitability/?apikey=585c543b04da4ac984e0b466c52626e4&algo=all'
             request(theUrl, function (error, response, cryptocurrencies) {
 
             var cryptocurrencies = JSON.parse(cryptocurrencies);
-            var bitcoinInfo;
+            var coinInfo;
             for(index = 0; index < 30; index++) {
                 if(cryptocurrencies.Data[index].CoinName == "Bitcoin") {
-                      bitcoinInfo = cryptocurrencies.Data[index];
-                    console.log("bitcoin info " + bitcoinInfo.CoinName)
+                      coinInfo = cryptocurrencies.Data[index];
                 }
 
             }
       
-          difficultyRate(bitcoinInfo, currencyPrice, howManyMiners)
+          difficultyRate(coinInfo, coinPrice, howManyMiners)
           // console.log('body:', cryptocurrencies); 
 
     });
    
 }
 
-function difficultyRate(cryptoInfo, cryptoPrice, howManyMiners) {
+function difficultyRate(coinInfo, coinPrice, howManyMiners) {
               // res.send(cryptocurrencies)
-
-            var hashRate = 13500000000000 * howManyMiners
-            var difficulty = cryptoInfo.Difficulty
+            var hashRate;
+            var block;
+            if(coinInfo.CoinName == "Bitcoin") {
+                 hashRate = 13500000000000 * howManyMiners
+                 block = 12.5    
+            }
+            else if(coinInfo.CoinName == "Litecoin") {
+                 hashRate = 50400000 * howManyMiners
+                 block = 25   
+            }
+            var difficulty = coinInfo.Difficulty
             var days = 30.0;
             var secondsADay = 86400.0
-            var block = 12.5    
             var mineAMonth = (days * hashRate * block * secondsADay) / (difficulty * 2**32) 
             var mineADay = mineAMonth / days
             var mineAYear = mineADay * 365.0
             var mineAWeek = mineAYear / 52.0
-            console.log(cryptoPrice)
-            var revenueADay = cryptoPrice * mineADay
-            var revenueAWeek = cryptoPrice * mineAWeek
-            var revenueAMonth = cryptoPrice * mineAMonth
-            var revenueAYear = cryptoPrice * mineAYear
+            console.log(coinPrice)
+            var revenueADay = coinPrice * mineADay
+            var revenueAWeek = coinPrice * mineAWeek
+            var revenueAMonth = coinPrice * mineAMonth
+            var revenueAYear = coinPrice * mineAYear
             console.log("Revenue a year " + revenueAYear)
 
 
