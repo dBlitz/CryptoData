@@ -7,13 +7,13 @@
         "benchmark"
     ],
     "scripts": {
-        "start": "node coinDifficulty.js",
+        "start": "node cd2.js",
         "prepublish": "npm prune",
         "test": "make lint && make test"
     },
     "repository": {
-    "type": "git",
-    "url": "https://github.com/dblitz/CryptoData"
+        "type": "git",
+        "url": "https://github.com/dblitz/CryptoData"
     },
     "author": "Devin Blitzer<devblitzer@gmail.com>",
     "dependencies": {
@@ -53,6 +53,6 @@
     },
     "main": "coinDifficulty.js",
     "engines": {
-            "node": "8.9.1"
+        "node": "8.9.1"
     }
 }
