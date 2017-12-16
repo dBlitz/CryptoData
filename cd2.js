@@ -96,7 +96,7 @@ app.post("/profitcalculator", function (req, res) {
 
 
             res.send(coinPrice)
-            profitCalculator(coinName, coinPrice, 1)
+            profitCalculator(coinName, coinPrice, quantity)
 
     });
 
@@ -112,13 +112,13 @@ function profitCalculator(coinName, coinPrice, howManyMiners) {
             var cryptocurrencies = JSON.parse(cryptocurrencies);
             var coinInfo;
             for(index = 0; index < 30; index++) {
-                if(cryptocurrencies.Data[index].CoinName == "Bitcoin") {
+                if(cryptocurrencies.Data[index].CoinName == coinName) {
                       coinInfo = cryptocurrencies.Data[index];
                 }
 
             }
       
-          difficultyRate(coinInfo, coinPrice, howManyMiners)
+          difficultyRate(coinInfo, coinPrice, howManyMiners)  
           // console.log('body:', cryptocurrencies); 
 
     });
@@ -134,14 +134,19 @@ function difficultyRate(coinInfo, coinPrice, howManyMiners) {
                  block = 12.5    
             }
             else if(coinInfo.CoinName == "Litecoin") {
-                 hashRate = 50400000 * howManyMiners
-                 block = 25   
+                 hashRate = 504000000 * howManyMiners
+                 block = 25    
             }
             var difficulty = coinInfo.Difficulty
             var days = 30.0;
             var secondsADay = 86400.0
             var mineAMonth = (days * hashRate * block * secondsADay) / (difficulty * 2**32) 
+            console.log("Mine a month " + mineAMonth)
             var mineADay = mineAMonth / days
+            console.log("Mine a Day " + mineADay)
+            console.log("litecoin price " + coinPrice)
+            console.log("Difficulty: " + difficulty)
+
             var mineAYear = mineADay * 365.0
             var mineAWeek = mineAYear / 52.0
             console.log(coinPrice)
@@ -160,7 +165,7 @@ function difficultyRate(coinInfo, coinPrice, howManyMiners) {
             // console.log("Profit a Day: " + profitADay + " Profit a Week: " + profitAWeek + " Profit a Month: " + profitAMonth + " Profit a Year:" + profitAYear)
             // console.log("ROI: " + ROI + " days until return of investment of $2,500 Antminer s9 @ 13.5 TH/s")
             // console.log(monthAndDays)
-}
+} 
 
 
 
