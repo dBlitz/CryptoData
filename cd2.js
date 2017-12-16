@@ -26,32 +26,41 @@ app.use(session({ secret: 'conduit', cookie: { maxAge: 60000 }, resave: false, s
 
 app.get("/coindifficulty", function (req, res) {
 
-    var theUrl = 'https://www.coinwarz.com/v1/api/profitability/?apikey=585c543b04da4ac984e0b466c52626e4&algo=all'
-    request(theUrl, function (error, response, cryptocurrencies) {
-      
-          console.log('body:', cryptocurrencies); 
-          res.send(cryptocurrencies)
-          var cryptocurrencies = JSON.parse(cryptocurrencies);
-            var bitcoin = cryptocurrencies.Data[1]
-            var hashRate = 13500000000000
-            var difficulty = bitcoin.Difficulty
-            var days = 30.0;
-            var secondsADay = 86400.0
-            var block = 12.5    
-            var profitAMonth = (days * hashRate * block * secondsADay) / (difficulty * 2**32) * 0.1
-            var profitADay = profitAMonth / days
-            var profitAYear = profitADay * 365.0
-            var profitAWeek = profitAYear / 52.0
-            var ROI = 2500.0 / (bitcoinPrice * profitADay)
-            var monthsROI = Math.floor(Math.ceil(ROI) / days)
-            var daysROI = Math.ceil(ROI) % days
-            var amountOfBitcoinBreakEven = ROI * profitADay
-            var monthAndDays = monthsROI + " months and " + daysROI + " days"
-            console.log("Profit a Day: " + profitADay + " Profit a Week: " + profitAWeek + " Profit a Month: " + profitAMonth + " Profit a Year:" + profitAYear)
-            // console.log("ROI: " + ROI + " days until return of investment of $2,500 Antminer s9 @ 13.5 TH/s")
 
-            console.log(monthAndDays)
-    });
+  var coinMarketURL = "https://api.coinmarketcap.com/v1/ticker/"
+  var warzURL = 'https://www.coinwarz.com/v1/api/profitability/?apikey=585c543b04da4ac984e0b466c52626e4&algo=all'
+
+    request(coinMarketURL, function (error, response, coins) {
+    
+            request(warzURL, function (error, response, cryptocurrencies) {
+
+
+
+              
+                    console.log('bbbb:', cryptocurrencies); 
+                    res.send(cryptocurrencies)
+                    var cryptocurrencies = JSON.parse(cryptocurrencies);
+                    var bitcoin = cryptocurrencies.Data[1]
+                    var hashRate = 13500000000000
+                    var difficulty = bitcoin.Difficulty
+                    var days = 30.0;
+                    var secondsADay = 86400.0
+                    var block = 12.5    
+                    var profitAMonth = (days * hashRate * block * secondsADay) / (difficulty * 2**32) * 0.1
+                    var profitADay = profitAMonth / days
+                    var profitAYear = profitADay * 365.0
+                    var profitAWeek = profitAYear / 52.0
+                    // var ROI = 2500.0 / (bitcoinPrice * profitADay)
+                    // var monthsROI = Math.floor(Math.ceil(ROI) / days)
+                    // var daysROI = Math.ceil(ROI) % days
+                    // var amountOfBitcoinBreakEven = ROI * profitADay
+                    // var monthAndDays = monthsROI + " months and " + daysROI + " days"
+                    // console.log("Profit a Day: " + profitADay + " Profit a Week: " + profitAWeek + " Profit a Month: " + profitAMonth + " Profit a Year:" + profitAYear)
+                    // // console.log("ROI: " + ROI + " days until return of investment of $2,500 Antminer s9 @ 13.5 TH/s")
+
+                    // console.log(monthAndDays)
+            });
+    }); 
 
 
 });
@@ -93,7 +102,6 @@ app.post("/profitcalculator", function (req, res) {
                   } 
                 }
             }
-
 
             res.send(coinPrice)
             profitCalculator(coinName, coinPrice, quantity)
