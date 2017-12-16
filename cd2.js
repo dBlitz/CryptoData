@@ -56,38 +56,47 @@ app.get("/coindifficulty", function (req, res) {
 
 });
 
-app.get("/profitcalculator", function (req, res) {
+/**
+  TESTING GETTING (1) Bitcoin Antminer S9
+**/
+
+app.post("/profitcalculator", function (req, res) {
 
    var theUrl = "https://api.coinmarketcap.com/v1/ticker/"
     request(theUrl, function (error, response, cryptocurrencies) {
-            var bitcoinPrice;
-            var bitcoinName;
+
+            var miner = req.body.miner;
+            var quantity = req.body.quantity;
+            var coinPrice;
+            var coinName;
             var litecoinPrice
             var litecoinName;
             var ethereumPrice;
             var cryptocurrencies = JSON.parse(cryptocurrencies);
 
-            for(index = 0; index < 30; index++) {
-                if(cryptocurrencies[index].name == "Bitcoin") {
-                    bitcoinPrice = cryptocurrencies[index].price_usd;
-                    bitcoinName = cryptocurrencies[index].name                       
-                    console.log("bitcoin price " + bitcoinPrice)
-                }
-                if(cryptocurrencies[index].name == "Litecoin") {
-                    litecoinPrice = cryptocurrencies[index].price_usd;
-                    litecoinName = cryptocurrencies[index].name                       
-                    console.log("litecoin priceee " + litecoinPrice)
-   
-                }
-                 if(cryptocurrencies[index].name == "Ethereum") {
-                    ethereumPrice = cryptocurrencies[index].price_usd;
-                    ethereumName = cryptocurrencies[index].name                       
-                    console.log("ethereum price " + ethereumPrice)
-
+            if(miner == "AntminerS9") {
+                for(index = 0; index < 30; index++) {
+                  if(cryptocurrencies[index].name == "Bitcoin") {
+                      coinPrice = cryptocurrencies[index].price_usd;
+                      coinName = cryptocurrencies[index].name                       
+                      console.log(coinName + " price: " + coinPrice)
+                  } 
                 }
             }
-            res.send(bitcoinPrice)
-            profitCalculator(bitcoinName, bitcoinPrice, 1)
+
+            if(miner == "AntminerL3") {
+                for(index = 0; index < 30; index++) {
+                  if(cryptocurrencies[index].name == "Litecoin") {
+                      coinPrice = cryptocurrencies[index].price_usd;
+                      coinName = cryptocurrencies[index].name                       
+                      console.log(coinName + " price: " + coinPrice)
+                  } 
+                }
+            }
+
+
+            res.send(coinPrice)
+            profitCalculator(coinName, coinPrice, 1)
 
     });
 
@@ -95,7 +104,7 @@ app.get("/profitcalculator", function (req, res) {
 
 });
 
-function profitCalculator(currencyType, currencyPrice, howManyMiners) {
+function profitCalculator(coinName, currencyPrice, howManyMiners) {
 
   var theUrl = 'https://www.coinwarz.com/v1/api/profitability/?apikey=585c543b04da4ac984e0b466c52626e4&algo=all'
             request(theUrl, function (error, response, cryptocurrencies) {
@@ -125,21 +134,26 @@ function difficultyRate(cryptoInfo, cryptoPrice, howManyMiners) {
             var days = 30.0;
             var secondsADay = 86400.0
             var block = 12.5    
-            var profitAMonth = (days * hashRate * block * secondsADay) / (difficulty * 2**32) * 0.1
-            console.log("profit a month" + profitAMonth)
-            var profitADay = profitAMonth / days
-            var profitAYear = profitADay * 365.0
-            var profitAWeek = profitAYear / 52.0
+            var mineAMonth = (days * hashRate * block * secondsADay) / (difficulty * 2**32) 
+            var mineADay = mineAMonth / days
+            var mineAYear = mineADay * 365.0
+            var mineAWeek = mineAYear / 52.0
             console.log(cryptoPrice)
-            var ROI = cryptoPrice * profitADay
-            console.log("Return of investment" + ROI)
-            var monthsROI = Math.floor(Math.ceil(ROI) / days)
-            var daysROI = Math.ceil(ROI) % days
-            var amountOfBitcoinBreakEven = ROI * profitADay
-            var monthAndDays = monthsROI + " months and " + daysROI + " days"
-            console.log("Profit a Day: " + profitADay + " Profit a Week: " + profitAWeek + " Profit a Month: " + profitAMonth + " Profit a Year:" + profitAYear)
+            var revenueADay = cryptoPrice * mineADay
+            var revenueAWeek = cryptoPrice * mineAWeek
+            var revenueAMonth = cryptoPrice * mineAMonth
+            var revenueAYear = cryptoPrice * mineAYear
+            console.log("Revenue a year " + revenueAYear)
+
+
+
+            // var monthsROI = Math.floor(Math.ceil(ROI) / days)
+            // var daysROI = Math.ceil(ROI) % days
+            // var amountOfBitcoinBreakEven = ROI * profitADay
+            // var monthAndDays = monthsROI + " months and " + daysROI + " days"
+            // console.log("Profit a Day: " + profitADay + " Profit a Week: " + profitAWeek + " Profit a Month: " + profitAMonth + " Profit a Year:" + profitAYear)
             // console.log("ROI: " + ROI + " days until return of investment of $2,500 Antminer s9 @ 13.5 TH/s")
-            console.log(monthAndDays)
+            // console.log(monthAndDays)
 }
 
 
