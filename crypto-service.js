@@ -165,7 +165,7 @@ app.post("/profitcalculator", function (req, res) {
             console.log("Mine a Day " + mineADay)
             console.log("litecoin price " + coinPrice)
             console.log("Difficulty: " + difficulty)
-
+///goo through mined and add four decimal places after however many zeroe .0
             var mineAYear = mineADay * 365.0
             var mineAWeek = mineAYear / 52.0
             console.log(coinPrice)
@@ -174,7 +174,15 @@ app.post("/profitcalculator", function (req, res) {
             var revenueAMonth = coinPrice * mineAMonth
             var revenueAYear = coinPrice * mineAYear
 
-            var profitCalculatorPage = '{ "revenueAMonth": "$' + revenueAYear + '", "litecoinMineAMonth": "' + revenueAYear + '"}'
+            var profitCalculatorPage = '{ "revenueADay": "$' + revenueADay 
+                                      + '", "revenueAWeek": "' + revenueAWeek 
+                                      + '", "revenueAMonth": "' + revenueAMonth 
+                                      + '", "revenueAYear": "' + revenueAYear 
+                                      + '", "mineADay": "' + mineADay 
+                                      + '", "mineAWeek": "' + mineAWeek 
+                                      + '", "mineAMonth": "' + mineAMonth 
+                                      + '", "mineAYear": "' + mineAYear 
+                                      + '"}'
             var profitCalculatorJSONResponse = JSON.parse(profitCalculatorPage);
             res.send(profitCalculatorJSONResponse)
 
