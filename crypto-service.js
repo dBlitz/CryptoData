@@ -92,11 +92,122 @@ app.get("/coinInfoHome", function (req, res) {
 
 });
 
+
+
+
+
+app.post("/profitcalculator", function (req, res) {
+
+
+  var coinMarketURL = "https://api.coinmarketcap.com/v1/ticker/"
+  var warzURL = 'https://www.coinwarz.com/v1/api/profitability/?apikey=585c543b04da4ac984e0b466c52626e4&algo=all'
+
+    request(coinMarketURL, function (error, response, coins) {
+
+
+            var miner = req.body.miner;
+            var quantityOfMiners = req.body.quantity;
+            var coinPrice;
+            var coinName;
+            var litecoinPrice
+            var litecoinName;
+            var ethereumPrice;
+            var cryptocurrencies = JSON.parse(coins);
+
+            if(miner == "AntminerS9") {
+                for(index = 0; index < 30; index++) {
+                  if(cryptocurrencies[index].name == "Bitcoin") {
+                      coinPrice = cryptocurrencies[index].price_usd;
+                      coinName = cryptocurrencies[index].name                       
+                      console.log(coinName + " price: " + coinPrice)
+                  } 
+                }
+            }
+
+            if(miner == "AntminerL3") {
+                for(index = 0; index < 30; index++) {
+                  if(cryptocurrencies[index].name == "Litecoin") {
+                      coinPrice = cryptocurrencies[index].price_usd;
+                      coinName = cryptocurrencies[index].name                       
+                      console.log(coinName + " price: " + coinPrice)
+                  } 
+                }
+            }
+
+            request(warzURL, function (error, response, cryptocurrencies) {
+
+
+            var cryptocurrencies = JSON.parse(cryptocurrencies);
+            var coinInfo;
+            for(index = 0; index < 30; index++) {
+                if(cryptocurrencies.Data[index].CoinName == coinName) {
+                      coinInfo = cryptocurrencies.Data[index];
+                }
+
+            }
+
+            var hashRate;
+            var block;
+            if(coinInfo.CoinName == "Bitcoin") {
+                 hashRate = 13500000000000 * quantityOfMiners
+                 block = 12.5    
+            }
+            else if(coinInfo.CoinName == "Litecoin") {
+                 hashRate = 504000000 * quantityOfMiners
+                 block = 25    
+            }
+            var difficulty = coinInfo.Difficulty
+            var days = 30.0;
+            var secondsADay = 86400.0
+            var mineAMonth = (days * hashRate * block * secondsADay) / (difficulty * 2**32) 
+            console.log("Mine a month " + mineAMonth)
+            var mineADay = mineAMonth / days
+            console.log("Mine a Day " + mineADay)
+            console.log("litecoin price " + coinPrice)
+            console.log("Difficulty: " + difficulty)
+
+            var mineAYear = mineADay * 365.0
+            var mineAWeek = mineAYear / 52.0
+            console.log(coinPrice)
+            var revenueADay = coinPrice * mineADay
+            var revenueAWeek = coinPrice * mineAWeek
+            var revenueAMonth = coinPrice * mineAMonth
+            var revenueAYear = coinPrice * mineAYear
+
+            var profitCalculatorPage = '{ "revenueAMonth": "$' + revenueAYear + '", "litecoinMineAMonth": "' + revenueAYear + '"}'
+            var profitCalculatorJSONResponse = JSON.parse(profitCalculatorPage);
+            res.send(profitCalculatorJSONResponse)
+
+
+
+
+            });
+    }); 
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
   TESTING GETTING (1) Bitcoin Antminer S9
 **/
 
-app.post("/profitcalculator", function (req, res) {
+app.post("/profitcalculator1", function (req, res) {
 
    var theUrl = "https://api.coinmarketcap.com/v1/ticker/"
     request(theUrl, function (error, response, cryptocurrencies) {
@@ -130,9 +241,10 @@ app.post("/profitcalculator", function (req, res) {
                 }
             }
 
-            res.send(coinPrice)
-            profitCalculator(coinName, coinPrice, quantity)
-
+            // res.send(coinPrice)
+            var profitJSONResponse = profitCalculator(coinName, coinPrice, quantity)
+            console.log("This is how many " + profitJSONResponse)
+            // res.send(profitJSONResponse)
     });
 
     
@@ -153,9 +265,10 @@ function profitCalculator(coinName, coinPrice, howManyMiners) {
 
             }
       
-          difficultyRate(coinInfo, coinPrice, howManyMiners)  
-          // console.log('body:', cryptocurrencies); 
+          var profitJSONResponse = difficultyRate(coinInfo, coinPrice, howManyMiners)  
+          // console.log(profitJSONResponse)
 
+          return profitJSONResponse;
     });
    
 }
@@ -192,7 +305,9 @@ function difficultyRate(coinInfo, coinPrice, howManyMiners) {
             console.log("Revenue a year " + revenueAYear)
 
 
-
+            var coinHomePageInfo = '{ "bitcoinRevenueAMonth": "$' + revenueAYear + '", "litecoinMineAMonth": "' + revenueAYear + '"}'
+            var coinHomeJSONResponse = JSON.parse(coinHomePageInfo);
+            return coinHomeJSONResponse;
             // var monthsROI = Math.floor(Math.ceil(ROI) / days)
             // var daysROI = Math.ceil(ROI) % days
             // var amountOfBitcoinBreakEven = ROI * profitADay
