@@ -14,8 +14,6 @@ var path = require('path'),
     
 'use strict'
 const status = require('http-status')
-
-
 var request = require("request")
 app.use(cors());
 app.use(require('morgan')('dev'));
@@ -25,22 +23,51 @@ app.use(require('method-override')());
 app.use(express.static(__dirname + '/public'));
 app.use(session({ secret: 'conduit', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false  }));
 
-app.get("/coindifficulty", function (req, res) {
+app.get("/coinInfoHome", function (req, res) {
 
 
   var coinMarketURL = "https://api.coinmarketcap.com/v1/ticker/"
   var warzURL = 'https://www.coinwarz.com/v1/api/profitability/?apikey=585c543b04da4ac984e0b466c52626e4&algo=all'
 
     request(coinMarketURL, function (error, response, coins) {
+
+            var bitcoinPrice;
+            var litecoinPrice
+            var cryptocurrencies = JSON.parse(cryptocurrencies);
+
+                for(index = 0; index < 30; index++) {
+                  if(cryptocurrencies[index].name == "Bitcoin") {
+                      bitcoinPrice = cryptocurrencies[index].price_usd;
+                      console.log("Bitcoin price: " + bitcoinPrice)
+                  } 
+                  else if(cryptocurrencies[index].name == "Litecoin") {
+                      litecoinPrice = cryptocurrencies[index].price_usd;
+                      console.log("Litecoin price: " + bitcoinPrice)
+                  } 
+                }
+
+
+
     
             request(warzURL, function (error, response, cryptocurrencies) {
 
+                  var bitcoinInfo;
+                  var litecoinInfo;
                   var difficulty = coinInfo.Difficulty
                   var days = 30.0;
                   var secondsADay = 86400.0
                   var mineAMonth = (days * hashRate * block * secondsADay) / (difficulty * 2**32) 
                   var revenueAMonth = coinPrice * mineAMonth
                   var revenueAYear = coinPrice * mineAYear
+
+                  for(index = 0; index < 30; index++) {
+                      if(cryptocurrencies.Data[index].CoinName == "Bitcoin") {
+                            bitcoinInfo = cryptocurrencies.Data[index];
+                      }
+                      else if(cryptocurrencies.Data[index].CoinName == "Litecoin") {
+                            litecoinInfo = cryptocurrencies.Data[index];
+                      }
+                   }
 
             });
     }); 

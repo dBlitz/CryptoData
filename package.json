@@ -7,7 +7,7 @@
         "benchmark"
     ],
     "scripts": {
-        "start": "node cd2.js",
+        "start": "node crypto-service.js",
         "prepublish": "npm prune",
         "test": "make lint && make test"
     },
