@@ -33,9 +33,10 @@ app.get("/coinInfoHome", function (req, res) {
 
             var bitcoinPrice;
             var litecoinPrice
-            var cryptocurrencies = JSON.parse(cryptocurrencies);
+            var cryptocurrencies = JSON.parse(coins);
 
                 for(index = 0; index < 30; index++) {
+                    // console.log("This is console: " + cryptocurrencies[].name)
                   if(cryptocurrencies[index].name == "Bitcoin") {
                       bitcoinPrice = cryptocurrencies[index].price_usd;
                       console.log("Bitcoin price: " + bitcoinPrice)
@@ -46,28 +47,44 @@ app.get("/coinInfoHome", function (req, res) {
                   } 
                 }
 
-
-
-    
             request(warzURL, function (error, response, cryptocurrencies) {
 
                   var bitcoinInfo;
                   var litecoinInfo;
-                  var difficulty = coinInfo.Difficulty
+                  var bitcoinRevenueAMonth;
+                  var bitcoinDifficulty;
+                  var litecoinDifficulty;
+                  var mineAMonth;
                   var days = 30.0;
-                  var secondsADay = 86400.0
-                  var mineAMonth = (days * hashRate * block * secondsADay) / (difficulty * 2**32) 
-                  var revenueAMonth = coinPrice * mineAMonth
-                  var revenueAYear = coinPrice * mineAYear
+                  var secondsADay = 86400.0;
+                  var bitcoinBlockReward;
+                  var litecoinBlockReward;
+                  var bitcoinHashRate = 13500000000000;
+                  var litecoinHashRate = 504000000;
+
+                  var cryptocurrencies = JSON.parse(cryptocurrencies);
 
                   for(index = 0; index < 30; index++) {
                       if(cryptocurrencies.Data[index].CoinName == "Bitcoin") {
-                            bitcoinInfo = cryptocurrencies.Data[index];
+                            bitcoinDifficulty = cryptocurrencies.Data[index].Difficulty;
+                            bitcoinBlockReward = cryptocurrencies.Data[index].BlockReward;
                       }
                       else if(cryptocurrencies.Data[index].CoinName == "Litecoin") {
-                            litecoinInfo = cryptocurrencies.Data[index];
+                            litecoinDifficulty = cryptocurrencies.Data[index].Difficulty;
+                            litecoinBlockReward = cryptocurrencies.Data[index].BlockReward;
                       }
                    }
+
+                  var bitcoinMineAMonth = (days * bitcoinHashRate * bitcoinBlockReward * secondsADay) / (bitcoinDifficulty * 2**32);
+                  var bitcoinRevenueAMonth = Math.ceil((bitcoinPrice * bitcoinMineAMonth) * 100) / 100;
+                  var litecoinMineAMonth = Math.ceil(((days * litecoinHashRate * litecoinBlockReward * secondsADay) / (litecoinDifficulty * 2**32)) * 100) / 100;
+                  var bitcoinRevenueAMonth = bitcoinRevenueAMonth.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+
+                  var coinHomePageInfo = '{ "bitcoinRevenueAMonth": "$' + bitcoinRevenueAMonth + '", "litecoinMineAMonth": "' + litecoinMineAMonth + '"}'
+                  var coinHomeJSONResponse = JSON.parse(coinHomePageInfo);
+
+                  res.send(coinHomeJSONResponse);
+                  // res.send(bitcoinRevenueAMonth + "  " + litecoinMineAMonth)
 
             });
     }); 
